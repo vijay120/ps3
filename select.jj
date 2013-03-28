@@ -1,0 +1,346 @@
+/*
+ * Create a .jj file, e.g., select.jj, using the information in the Tutorial
+ * and run it by following the steps below:
+ *
+ * > javacc select.jj
+ * > javac Select.java  (or javac *.java)
+ * > java Select
+ *
+ * Here is a sample run:
+ *
+ * alee$ javacc select.jj
+ * Java Compiler Compiler Version 5.0 (Parser Generator)
+ * (type "javacc" with no arguments for help)
+ * Reading from file select.jj . . .
+ * File "TokenMgrError.java" is being rebuilt.
+ * File "ParseException.java" is being rebuilt.
+ * File "Token.java" is being rebuilt.
+ * File "SimpleCharStream.java" is being rebuilt.
+ * Parser generated successfully.
+ * alee$ javac Select.java
+ * alee$ java Select
+ * select *
+ *     -> select *
+ * select: *
+ * from: null
+ * where: null
+ * alee$ 
+ */
+
+/* This can be used as a starting point for parsing SELECT statements.
+ * This version handles only "select *".
+ */
+
+/* Options and class declaration */
+options {
+}
+
+PARSER_BEGIN(Select)
+    import java.io.PrintStream;
+    import java.util.*;
+    import java.io.*;
+
+
+    public class Select {
+
+        public static void main(String[] args)
+            throws ParseException, TokenMgrError, IOException {
+
+                Select parser = new Select(System.in);
+                parser.Start(System.out);
+        }
+
+    }
+PARSER_END(Select)
+
+
+/* Specifying a lexical analyzer using regular expression productions */
+
+SKIP : { "\n" | "\r" | "\r\n"}
+TOKEN: { < SELECT: "select" | "SELECT" | "Select" > }
+TOKEN: { < FROM: "from" | "FROM" | "From" > }
+TOKEN: { < WHERE: "where" | "WHERE" | "Where" > }
+TOKEN: { < EXIT: "exit" | "EXIT" | "Exit" > }
+TOKEN: { < STAR: "*" > }
+TOKEN: { < EQUAL: "=" >}
+TOKEN: { < QUOTATION: "\"" > }
+TOKEN: { < SPACE: " " > }
+TOKEN: { < NUMBER : (["0"-"9"])+ > }
+TOKEN: { < SEMICOLON: ";" >}
+TOKEN: { < CAPITAL : (["A"-"Z"]) >}
+TOKEN: { < ALPHANUMERIC : (["A"-"Z", "a"-"z", "0"-"9", "."])+ >}
+
+
+/* Specifying the parser using BNF productions */
+/* The input to the parser consists of a single statement so far:
+ *     Start --> Statement
+ */
+
+
+void Start(PrintStream printStream) throws IOException:
+{
+    SelectStatement stmt;
+}
+{
+    {
+
+        String inputFileName1 = ".//s0.txt";
+        String inputFileName2 = ".//s1.txt";
+        //String inputFileName = ".\\s0.txt"; // Try this if the other
+        // Establish a input stream so that we can read the file
+        StudentReader sreader = new StudentReader(inputFileName1);
+        CourseReader creader = new CourseReader(inputFileName2);
+
+
+        // Read the number of entries first
+        int numStudents = 0;
+        if (sreader.hasNext()) {
+            numStudents = sreader.getSize();
+        }
+
+        int numCourse = 0;
+        if (sreader.hasNext()) {
+            numCourse = creader.getSize();
+        }
+
+        // Now that we know the size, we can create an array with that size
+        Student[] students = new Student[numStudents];
+        Course [] courses = new Course[numCourse];
+
+        // Read the rest of the input file
+        int i = 0;
+        while (sreader.hasNext()) {
+            Student s = sreader.readStudent();
+            students[i] = s;
+            i = i + 1;
+        }
+
+        int j = 0;
+        while (creader.hasNext()) {
+            Course c = creader.readCourse();
+            courses[j] = c;
+            j = j + 1;
+        }
+
+        while(true) {
+
+            stmt = Statement(printStream);
+
+            if (stmt.select == "*") {
+
+
+                    if(stmt.where == null && stmt.from.equals("Courses")) {
+                            for(int k=0; k<numCourse; k++) {
+                                System.out.println(courses[k]);
+                            }
+                    }
+
+                    else if(stmt.where == null && stmt.from.equals("Students")) {
+                            for(int k=0; k<numStudents; k++) {
+                                System.out.println(students[k]);
+                            }
+                    }                   
+
+
+                    else {
+
+
+                        String[] val = stmt.where.split("=");
+
+
+                        if (stmt.from.equals("Courses")) {
+
+
+                            if (val[0].equals("1")) {
+
+
+                                for(int k=0; k<numCourse; k++) {
+
+
+                                    if (val[1].equals(courses[k].getName())) {
+                                        System.out.println(courses[k]);
+                                    }
+                                }
+                            }
+
+
+                            if (val[0].equals("2")) {
+
+                                for(int k=0; k<numCourse; k++) {
+
+                                    if (Integer.parseInt(val[1]) == courses[k].getID()) {
+                                        System.out.println(courses[k]);
+                                    }
+                                }
+                            }
+
+                            if (val[0].equals("3")) {
+
+                                for(int k=0; k<numCourse; k++) {
+
+                                    if (val[1].equals(courses[k].getSemester())) {
+                                        System.out.println(courses[k]);
+                                    }
+                                }
+                            }
+
+                        }
+
+
+                        if (stmt.from.equals("Students")) {
+
+
+                            if (val[0].equals("1")) {
+
+                                for(int k=0; k<numStudents; k++) {
+
+                                    if (val[1].equals(students[k].getName())) {
+                                        System.out.println(students[k]);
+                                    }
+                                }
+                            }
+
+                            if (val[0].equals("2")) {
+
+                                for(int k=0; k<numStudents; k++) {
+
+                                    if (Integer.parseInt(val[1]) == students[k].getID()) {
+                                        System.out.println(students[k]);
+                                    }
+                                }
+                            }
+
+
+                            if (val[0].equals("3")) {
+
+                                for(int k=0; k<numStudents; k++) {
+
+                                    if (val[1].equals(students[k].getMajor())) {
+                                        System.out.println(students[k]);
+                                    }
+                                }
+                            }
+
+
+                            if (val[0].equals("4")) {
+
+                                for(int k=0; k<numStudents; k++) {
+
+                                    if (Integer.parseInt(val[1]) == students[k].getGPA()) {
+                                        System.out.println(students[k]);
+                                    }
+                                }
+
+                            }                                                 
+
+                        }
+                    }
+            }
+        }
+    }
+}
+
+
+
+/* A Statement so far is defined as follows:
+ *
+ *    Statement --> select *
+ *               |  Select *
+ *               |  SELECT *
+ */
+
+SelectStatement Statement(PrintStream printStream):
+{
+    Token t;
+    SelectStatement ss = new SelectStatement();
+    StringBuffer buffer = new StringBuffer();
+}
+{
+
+    (
+    t = <EXIT>
+    t = <SEMICOLON>
+    { System.exit(0); }
+    )
+
+    |
+
+    (
+    t = <SELECT>
+    { buffer.append(t.image); }
+    t = <SPACE>
+    { buffer.append(t.image); }
+    t = <STAR>
+    { buffer.append(t.image); }
+    { ss.select = t.image; }
+    t = <SPACE>
+    { buffer.append(t.image); }
+
+
+    t = <FROM>
+    { buffer.append(t.image); }
+    t = <SPACE>
+    { buffer.append(t.image); }
+    t = <ALPHANUMERIC>
+    { buffer.append(t.image); }
+    { ss.from  = t.image;}
+
+    (
+
+
+        t = <SEMICOLON>
+        { buffer.append(t.image); }
+
+        |
+
+
+        (
+
+            t = <SPACE>
+            { buffer.append(t.image); }
+
+            t = <WHERE>
+            {buffer.append(t.image); }
+            t = <SPACE>
+            { buffer.append(t.image); }
+            t = <NUMBER>
+            { buffer.append(t.image); }
+            { ss.where = t.image;}
+            t = <SPACE>
+            { buffer.append(t.image); }
+            t = <EQUAL>
+            { buffer.append(t.image); }
+            { ss.where += t.image;}
+
+            t = <SPACE>
+            { buffer.append(t.image); }
+
+            (
+
+                t = <NUMBER>
+                { buffer.append(t.image); }
+                { ss.where += t.image;}
+
+
+                |
+
+                t = <QUOTATION>
+                { buffer.append(t.image); }
+                t = <ALPHANUMERIC>
+                { ss.where += t.image;}
+                t = <QUOTATION>
+                { buffer.append(t.image); }
+
+            )
+
+            t = <SEMICOLON>
+            { buffer.append(t.image); }
+
+        )
+
+    )
+    )
+      
+    { printStream.println("    -> " + buffer); }
+    { return ss; }
+}

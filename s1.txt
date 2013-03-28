@@ -1,0 +1,80 @@
+20
+Name: Anthropology
+Semester: Spring
+Id: 100
+
+Name: History
+Semester: Fall
+Id: 101
+
+Name: Geography
+Semester: Spring
+Id: 102
+
+Name: Geology
+Semester: Fall
+Id: 103
+
+Name: Math
+Semester: Spring
+Id: 104
+
+Name: Physics
+Semester: Fall
+Id: 105
+
+Name: Computers
+Semester: Spring
+Id: 106
+
+Name: Biology
+Semester: Fall
+Id: 107
+
+Name: Chemistry
+Semester: Fall
+Id: 108
+
+Name: Biology1
+Semester: Fall
+Id: 109
+
+Name: Biology2
+Semester: Fall
+Id: 110
+
+Name: Biology3
+Semester: Fall
+Id: 111
+
+Name: Biology4
+Semester: Fall
+Id: 112
+
+Name: Biology5
+Semester: Fall
+Id: 113
+
+Name: Biology6
+Semester: Fall
+Id: 114
+
+Name: Biology7
+Semester: Fall
+Id: 115
+
+Name: Anthropology1
+Semester: Spring
+Id: 116
+
+Name: Anthropology4
+Semester: Spring
+Id: 117
+
+Name: Anthropology5
+Semester: Spring
+Id: 118
+
+Name: Anthropology6
+Semester: Spring
+Id: 119

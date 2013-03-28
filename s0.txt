@@ -1,0 +1,101 @@
+20
+Name: DemasE.Candaele
+Id: 100
+Major: Anthropology
+GPA: 3
+
+Name: CyG.Campbell
+Id: 101
+Major: PreMed
+GPA: 2
+
+Name: PhelanW.Candaele
+Id: 102
+Major: Medicine
+GPA: 4
+
+Name: MichelleM.Mansfield
+Id: 103
+Major: Bioengineering
+GPA: 0
+
+Name: QasimB.Hanscom
+Id: 104
+Major: MiningEngineering
+GPA: 4
+
+Name: ChaimG.Ehrig
+Id: 105
+Major: Undeclared
+GPA: 1
+
+Name: KillianN.Guthrie
+Id: 106
+Major: Education
+GPA: 1
+
+Name: BlaineT.Petersen
+Id: 107
+Major: Ballet
+GPA: 1
+
+Name: ConallU.Hanscom
+Id: 108
+Major: Linguistics
+GPA: 0
+
+Name: ElanK.Gilbert
+Id: 109
+Major: Undeclared
+GPA: 2
+
+Name: TaitI.Blackham
+Id: 110
+Major: Linguistics
+GPA: 1
+
+Name: Lennon
+Id: 111
+Major: AsianStudies
+GPA: 1
+
+Name: AdirV.Kennedy
+Id: 112
+Major: AsianStudies
+GPA: 1
+
+Name: CarrikH.Adolfo
+Id: 113
+Major: Physics
+GPA: 1
+
+Name: AcelinK.Robinson
+Id: 114
+Major: Anthropology
+GPA: 0
+
+Name: XavierP.Douville
+Id: 115
+Major: Psychology
+GPA: 0
+
+Name: JorgeY.Eggett
+Id: 116
+Major: Fine Arts
+GPA: 1
+
+Name: KinseyX.Lim
+Id: 117
+Major: Undeclared
+GPA: 1
+
+Name: JervaseF.Thompson
+Id: 118
+Major: Chemistry
+GPA: 3
+
+Name: WayneC.Gross
+Id: 119
+Major: Biology
+GPA: 3
+
