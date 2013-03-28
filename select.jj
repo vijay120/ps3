@@ -56,7 +56,7 @@ PARSER_END(Select)
 
 /* Specifying a lexical analyzer using regular expression productions */
 
-SKIP : { "\n" | "\r" | "\r\n"}
+SKIP: { "\n" | "\r" | "\r\n"}
 TOKEN: { < SELECT: "select" | "SELECT" | "Select" > }
 TOKEN: { < FROM: "from" | "FROM" | "From" > }
 TOKEN: { < WHERE: "where" | "WHERE" | "Where" > }
@@ -67,8 +67,11 @@ TOKEN: { < QUOTATION: "\"" > }
 TOKEN: { < SPACE: " " > }
 TOKEN: { < NUMBER : (["0"-"9"])+ > }
 TOKEN: { < SEMICOLON: ";" >}
-TOKEN: { < CAPITAL : (["A"-"Z"]) >}
 TOKEN: { < ALPHANUMERIC : (["A"-"Z", "a"-"z", "0"-"9", "."])+ >}
+TOKEN: { < LISTATTR: ((<ALPHANUMERIC>)(<COMMA>)(<SPACE>))* (<ALPHANUMERIC>) >}
+TOKEN: { < COMMA: "," >}
+TOKEN: { < CAPITAL : (["A"-"Z"]) >}
+
 
 
 /* Specifying the parser using BNF productions */
@@ -125,6 +128,12 @@ void Start(PrintStream printStream) throws IOException:
         while(true) {
 
             stmt = Statement(printStream);
+
+            System.out.println(stmt.attrslist);
+
+            String[] attrlist = stmt.attrslist.split(",");
+
+            System.out.println(attrlist[0]);
 
             if (stmt.select == "*") {
 
@@ -270,11 +279,36 @@ SelectStatement Statement(PrintStream printStream):
     { buffer.append(t.image); }
     t = <SPACE>
     { buffer.append(t.image); }
-    t = <STAR>
-    { buffer.append(t.image); }
-    { ss.select = t.image; }
+
+    (
+
+        t = <STAR>
+        { buffer.append(t.image); }
+
+        | 
+
+        (
+
+            t = <ALPHANUMERIC>
+            { buffer.append(t.image); }
+
+            |
+
+
+            t = <LISTATTR>
+            { buffer.append(t.image); }
+            { ss.attrslist = t.image; }
+
+
+        )
+
+
+    )
+
+
     t = <SPACE>
-    { buffer.append(t.image); }
+    { buffer.append(t.image); }   
+
 
 
     t = <FROM>

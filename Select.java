@@ -61,6 +61,12 @@
 
             stmt = Statement(printStream);
 
+            System.out.println(stmt.attrslist);
+
+            String[] attrlist = stmt.attrslist.split(",");
+
+            System.out.println(attrlist[0]);
+
             if (stmt.select == "*") {
 
 
@@ -195,9 +201,34 @@
       buffer.append(t.image);
       t = jj_consume_token(SPACE);
       buffer.append(t.image);
-      t = jj_consume_token(STAR);
-      buffer.append(t.image);
-      ss.select = t.image;
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case STAR:
+        t = jj_consume_token(STAR);
+          buffer.append(t.image);
+        break;
+      case ALPHANUMERIC:
+      case LISTATTR:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case ALPHANUMERIC:
+          t = jj_consume_token(ALPHANUMERIC);
+              buffer.append(t.image);
+          break;
+        case LISTATTR:
+          t = jj_consume_token(LISTATTR);
+              buffer.append(t.image);
+              ss.attrslist = t.image;
+          break;
+        default:
+          jj_la1[0] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        break;
+      default:
+        jj_la1[1] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
       t = jj_consume_token(SPACE);
       buffer.append(t.image);
       t = jj_consume_token(FROM);
@@ -244,7 +275,7 @@
                   buffer.append(t.image);
           break;
         default:
-          jj_la1[0] = jj_gen;
+          jj_la1[2] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -252,7 +283,7 @@
               buffer.append(t.image);
         break;
       default:
-        jj_la1[1] = jj_gen;
+        jj_la1[3] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -260,7 +291,7 @@
       {if (true) return ss;}
       break;
     default:
-      jj_la1[2] = jj_gen;
+      jj_la1[4] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -277,13 +308,13 @@
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[3];
+  static final private int[] jj_la1 = new int[5];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1400,0x2800,0x90,};
+      jj_la1_0 = new int[] {0xc000,0xc100,0x1400,0x2800,0x90,};
    }
 
   /** Constructor with InputStream. */
@@ -304,7 +335,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -318,7 +349,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -335,7 +366,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -345,7 +376,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -361,7 +392,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -370,7 +401,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -421,12 +452,12 @@
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[16];
+    boolean[] la1tokens = new boolean[18];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -435,7 +466,7 @@
         }
       }
     }
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 18; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

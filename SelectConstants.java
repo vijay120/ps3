@@ -29,9 +29,13 @@ public interface SelectConstants {
   /** RegularExpression Id. */
   int SEMICOLON = 13;
   /** RegularExpression Id. */
-  int CAPITAL = 14;
+  int ALPHANUMERIC = 14;
   /** RegularExpression Id. */
-  int ALPHANUMERIC = 15;
+  int LISTATTR = 15;
+  /** RegularExpression Id. */
+  int COMMA = 16;
+  /** RegularExpression Id. */
+  int CAPITAL = 17;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -52,8 +56,10 @@ public interface SelectConstants {
     "\" \"",
     "<NUMBER>",
     "\";\"",
-    "<CAPITAL>",
     "<ALPHANUMERIC>",
+    "<LISTATTR>",
+    "\",\"",
+    "<CAPITAL>",
   };
 
 }
