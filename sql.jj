@@ -1,0 +1,476 @@
+/*
+ * Create a .jj file, e.g., select.jj, using the information in the Tutorial
+ * and run it by following the steps below:
+ *
+ * > javacc select.jj
+ * > javac Select.java  (or javac *.java)
+ * > java Select
+ *
+ * Here is a sample run:
+ *
+ * alee$ javacc select.jj
+ * Java Compiler Compiler Version 5.0 (Parser Generator)
+ * (type "javacc" with no arguments for help)
+ * Reading from file select.jj . . .
+ * File "TokenMgrError.java" is being rebuilt.
+ * File "ParseException.java" is being rebuilt.
+ * File "Token.java" is being rebuilt.
+ * File "SimpleCharStream.java" is being rebuilt.
+ * Parser generated successfully.
+ * alee$ javac Select.java
+ * alee$ java Select
+ * select *
+ *     -> select *
+ * select: *
+ * from: null
+ * where: null
+ * alee$ 
+ */
+
+/* This can be used as a starting point for parsing SELECT statements.
+ * This version handles only "select *".
+ */
+
+/* Options and class declaration */
+options {
+}
+
+PARSER_BEGIN(Sql)
+    import java.io.PrintStream;
+    import java.util.*;
+    import java.io.*;
+    import java.io.FileNotFoundException;
+    import java.lang.reflect.Method;
+    import java.lang.reflect.Type;
+    import java.lang.reflect.InvocationTargetException;
+    import java.lang.reflect.Method;
+    import java.lang.reflect.Type;
+    import java.util.Locale;
+    import static java.lang.System.out;
+    import java.io.File;
+    import java.io.IOException;
+
+    public class Sql {
+        public static void main(String[] args)
+            throws ParseException, TokenMgrError, IOException {
+
+                Sql parser;
+
+                if (args.length == 1) {
+
+                  try {
+                    parser = new Sql(new FileInputStream(args[0]));
+                  }
+                  catch (java.io.FileNotFoundException e) {
+                    System.out.println("ERR: The SQL file " + args[0] + " was not found.");
+                    return;
+                  }
+                  parser.Start(System.out);
+                }
+                else {
+                  parser = new Sql(System.in);
+                  parser.Start(System.out);
+                }
+        }
+    }
+
+PARSER_END(Sql)
+
+
+/* Specifying a lexical analyzer using regular expression productions */
+
+SKIP: { "\n" | "\r" | "\r\n"}
+TOKEN: { < CREATE: "create" | "CREATE" | "Create" >}
+TOKEN: { < DATABASE: "database" | "DATABASE" | "Database" >}
+TOKEN: { < SELECT: "select" | "SELECT" | "Select" > }
+TOKEN: { < FROM: "from" | "FROM" | "From" > }
+TOKEN: { < WHERE: "where" | "WHERE" | "Where" > }
+TOKEN: { < EXIT: "exit" | "EXIT" | "Exit" > }
+TOKEN: { < STAR: "*" > }
+TOKEN: { < EQUAL: "=" >}
+TOKEN: { < QUOTATION: "\"" > }
+TOKEN: { < SPACE: " " > }
+TOKEN: { < NUMBER : (["0"-"9"])+ > }
+TOKEN: { < SEMICOLON: ";" >}
+TOKEN: { < ALPHANUMERIC : (["A"-"Z", "a"-"z", "0"-"9", "."])+ >}
+TOKEN: { < LISTATTR: ((<ALPHANUMERIC>)(<COMMA>)(<SPACE>))* (<ALPHANUMERIC>) >}
+TOKEN: { < COMMA: "," >}
+TOKEN: { < CAPITAL : (["A"-"Z"]) >}
+
+
+
+/* Specifying the parser using BNF productions */
+/* The input to the parser consists of a single statement so far:
+ *     Start --> Statement
+ */
+
+
+void Start(PrintStream printStream) throws IOException:
+{
+    SelectStatement stmt;
+}
+{
+    {
+
+        String inputFileName1 = ".//s0.txt";
+        String inputFileName2 = ".//s1.txt";
+        //String inputFileName = ".\\s0.txt"; // Try this if the other
+        // Establish a input stream so that we can read the file
+        StudentReader sreader = new StudentReader(inputFileName1);
+        CourseReader creader = new CourseReader(inputFileName2);
+
+
+        // Read the number of entries first
+        int numStudents = 0;
+        if (sreader.hasNext()) {
+            numStudents = sreader.getSize();
+        }
+
+        int numCourse = 0;
+        if (sreader.hasNext()) {
+            numCourse = creader.getSize();
+        }
+
+        // Now that we know the size, we can create an array with that size
+        Student[] students = new Student[numStudents];
+        Course [] courses = new Course[numCourse];
+
+        // Read the rest of the input file
+        int i = 0;
+        while (sreader.hasNext()) {
+            Student s = sreader.readStudent();
+            students[i] = s;
+            i = i + 1;
+        }
+
+        int j = 0;
+        while (creader.hasNext()) {
+            Course c = creader.readCourse();
+            courses[j] = c;
+            j = j + 1;
+        }
+
+        while(true) {
+
+            stmt = Statement(printStream);
+
+            ArrayList result = new ArrayList();
+
+
+            if(stmt.database != null) {
+
+                        try {
+
+                            boolean success = (
+                            new File(stmt.database)).mkdir();
+
+                            if (success) {
+                            System.out.println("Directory: " 
+                            + stmt.database + " created");
+                            }
+
+                        } catch (Exception e) {
+                              e.printStackTrace();
+                        }
+            }
+
+            else if(stmt.where == null && stmt.from.equals("Courses")) {
+
+                    for(int k=0; k<numCourse; k++) {
+                        result.add((Course)courses[k]);
+                    }
+            }
+
+            else if(stmt.where == null && stmt.from.equals("Students")) {
+                    for(int k=0; k<numStudents; k++) {
+                        result.add((Student)students[k]);
+                    }
+            } 
+
+            else {
+
+                        String[] val = stmt.where.split("=");
+
+
+                        if (stmt.from.equals("Courses")) {
+
+
+                            if (val[0].equals("1")) {
+
+
+                                for(int k=0; k<numCourse; k++) {
+
+
+                                    if (val[1].equals(courses[k].getName())) {
+                                        result.add((Course)courses[k]);
+                                    }
+                                }
+                            }
+
+
+                            if (val[0].equals("2")) {
+
+                                for(int k=0; k<numCourse; k++) {
+
+                                    if (Integer.parseInt(val[1]) == courses[k].getID()) {
+                                        result.add((Course)courses[k]);
+                                    }
+                                }
+                            }
+
+                            if (val[0].equals("3")) {
+
+                                for(int k=0; k<numCourse; k++) {
+
+                                    if (val[1].equals(courses[k].getSemester())) {
+                                        result.add((Course)courses[k]);
+                                    }
+                                }
+                            }
+
+                        }
+
+
+                        if (stmt.from.equals("Students")) {
+
+
+                            if (val[0].equals("1")) {
+
+                                for(int k=0; k<numStudents; k++) {
+
+                                    if (val[1].equals(students[k].getName())) {
+                                        result.add((Student)students[k]);
+                                    }
+                                }
+                            }
+
+                            if (val[0].equals("2")) {
+
+                                for(int k=0; k<numStudents; k++) {
+
+                                    if (Integer.parseInt(val[1]) == students[k].getID()) {
+                                        result.add((Student)students[k]);
+                                    }
+                                }
+                            }
+
+
+                            if (val[0].equals("3")) {
+
+                                for(int k=0; k<numStudents; k++) {
+
+                                    if (val[1].equals(students[k].getMajor())) {
+                                        result.add((Student)students[k]);
+                                    }
+                                }
+                            }
+
+
+                            if (val[0].equals("4")) {
+
+                                for(int k=0; k<numStudents; k++) {
+
+                                    if (Integer.parseInt(val[1]) == students[k].getGPA()) {
+                                        result.add((Student)students[k]);
+                                    }
+                                }
+                            }                                                 
+                        }
+            }
+
+            if(stmt.database == null) {
+
+                String[] attrlist = stmt.select.split(", ");
+                ArrayList<Method> usedMethods = new ArrayList<Method>();
+
+                if(stmt.select != "*")  {
+
+                    Class test  = result.get(0).getClass();
+                    Method[] allMethods = test.getDeclaredMethods();
+
+                    for (Method m : allMethods) {
+
+                        for(int p = 0; p<attrlist.length; p++) {
+
+                            if(m.getName().toLowerCase().contains(attrlist[p]) && m.getName().toLowerCase().contains("get")) {
+
+                                usedMethods.add(m);
+
+                            }
+                        }
+                    }
+                }   
+
+                Iterator it = result.iterator();
+
+
+                while(it.hasNext()) {
+                    Object temp = it.next();
+                    if(usedMethods.size() == 0) {
+                        System.out.println(temp);
+                    }
+
+                    else {
+
+                        for(int p = 0; p<usedMethods.size(); p++) {
+                            try {
+                                System.out.print(usedMethods.get(p).invoke(temp));
+                                System.out.print(" ");
+                            }
+                            catch (IllegalAccessException x) {
+                                    x.printStackTrace();
+                            } 
+                            catch (InvocationTargetException x) {
+                                    x.printStackTrace();
+                            }
+                        }
+                        System.out.println("");
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+
+
+/* A Statement so far is defined as follows:
+ *
+ *    Statement --> select *
+ *               |  Select *
+ *               |  SELECT *
+ */
+
+SelectStatement Statement(PrintStream printStream):
+{
+    Token t;
+    SelectStatement ss = new SelectStatement();
+    StringBuffer buffer = new StringBuffer();
+}
+{
+    (
+        t = <EXIT>
+        t = <SEMICOLON>
+        { System.exit(0); }
+    )
+
+    |
+
+    (
+        t = <CREATE>
+        { buffer.append(t.image); }
+        t = <SPACE>
+        { buffer.append(t.image); }
+        t = <DATABASE>
+        { buffer.append(t.image); }
+        t = <SPACE>
+        { buffer.append(t.image); }
+        t = <ALPHANUMERIC>
+        { buffer.append(t.image); }
+        { ss.database = t.image;  }
+        t = <SEMICOLON>
+        { printStream.println("    -> " + buffer); }
+        { return ss; }
+    )
+
+    |
+
+    (
+        t = <SELECT>
+        { buffer.append(t.image); }
+        t = <SPACE>
+        { buffer.append(t.image); }
+
+        (
+
+            t = <STAR>
+            { buffer.append(t.image); }
+            { ss.select = t.image; }
+
+            | 
+
+            (
+
+                t = <ALPHANUMERIC>
+                { buffer.append(t.image); }
+                { ss.select = t.image; }
+
+                |
+
+
+                t = <LISTATTR>
+                { buffer.append(t.image); }
+                { ss.select = t.image; }
+            )
+        )
+
+
+        t = <SPACE>
+        { buffer.append(t.image); }
+        t = <FROM>
+        { buffer.append(t.image); }
+        t = <SPACE>
+        { buffer.append(t.image); }
+        t = <ALPHANUMERIC>
+        { buffer.append(t.image); }
+        { ss.from  = t.image;}
+
+        (
+
+
+            t = <SEMICOLON>
+            { buffer.append(t.image); }
+
+            |
+
+
+            (
+
+                t = <SPACE>
+                { buffer.append(t.image); }
+
+                t = <WHERE>
+                {buffer.append(t.image); }
+                t = <SPACE>
+                { buffer.append(t.image); }
+                t = <NUMBER>
+                { buffer.append(t.image); }
+                { ss.where = t.image;}
+                t = <SPACE>
+                { buffer.append(t.image); }
+                t = <EQUAL>
+                { buffer.append(t.image); }
+                { ss.where += t.image;}
+
+                t = <SPACE>
+                { buffer.append(t.image); }
+
+                (
+
+                    t = <NUMBER>
+                    { buffer.append(t.image); }
+                    { ss.where += t.image;}
+
+
+                    |
+
+                    t = <QUOTATION>
+                    { buffer.append(t.image); }
+                    t = <ALPHANUMERIC>
+                    { ss.where += t.image;}
+                    t = <QUOTATION>
+                    { buffer.append(t.image); }
+
+                )
+
+                t = <SEMICOLON>
+                { buffer.append(t.image); }
+
+            )
+        )
+    )
+      
+    { printStream.println("    -> " + buffer); }
+    { return ss; }
+}
